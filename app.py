@@ -297,7 +297,159 @@ st.divider()
 # --------------------------------------------------
 
 if page == "Discover Events":
+        # ----------------------------------------------
+    # CROWDPULSE: COMMUNITY EVENT INTELLIGENCE
+    # ----------------------------------------------
 
+    registrations = load_registrations()
+
+    event_counts = {
+        event["id"]: sum(
+            1
+            for registration in registrations
+            if registration.get("event_id") == event["id"]
+        )
+        for event in events
+    }
+
+    total_registrations = len(registrations)
+
+    events_with_registrations = sum(
+        1 for count in event_counts.values() if count > 0
+    )
+
+    st.html("""
+        <div style="
+            background: linear-gradient(120deg, #241044, #102F46);
+            border: 1px solid #6D5AE6;
+            border-radius: 18px;
+            padding: 22px;
+            margin-bottom: 18px;
+        ">
+            <div style="
+                color: #5EEAD4;
+                font-size: 12px;
+                font-weight: 800;
+                letter-spacing: 2px;
+            ">
+                COMMUNITY EVENT INTELLIGENCE
+            </div>
+            <h2 style="color: #FFFFFF; margin: 8px 0;">
+                🔥 CrowdPulse
+            </h2>
+            <p style="color: #E0E7FF; margin-bottom: 0;">
+                Explore community favourites, uncover hidden gems,
+                and see which events are attracting registrations.
+            </p>
+        </div>
+    """)
+
+    metric1, metric2, metric3 = st.columns(3)
+
+    with metric1:
+        st.metric(
+            "📝 Total Registrations",
+            total_registrations
+        )
+
+    with metric2:
+        st.metric(
+            "🎯 Events with Registrations",
+            events_with_registrations
+        )
+
+    with metric3:
+        st.metric(
+            "📅 Events Listed",
+            len(events)
+        )
+
+    st.divider()
+        # ----------------------------------------------
+    # COMMUNITY FAVOURITES AND HIDDEN GEMS
+    # ----------------------------------------------
+
+    st.subheader("⭐ Community Favourites & 💎 Hidden Gems")
+
+    registered_events = [
+        event for event in events
+        if event_counts.get(event["id"], 0) > 0
+    ]
+
+    if registered_events:
+        community_favourites = sorted(
+            registered_events,
+            key=lambda event: (
+                -event_counts.get(event["id"], 0),
+                event["title"].casefold()
+            )
+        )
+
+        favourite_col, hidden_gem_col = st.columns(2)
+
+        with favourite_col:
+            st.markdown("### ⭐ Community Favourites")
+
+            for event in community_favourites[:3]:
+                count = event_counts.get(event["id"], 0)
+
+                with st.container(border=True):
+                    st.markdown(f"**{event['title']}**")
+                    st.caption(f"📍 {event['location']}")
+                    st.write(f"📝 {count} registration(s)")
+
+        with hidden_gem_col:
+            st.markdown("### 💎 Hidden Gems")
+
+            hidden_gems = sorted(
+                [
+                    event for event in events
+                    if event_counts.get(event["id"], 0) == 0
+                ],
+                key=lambda event: event["title"].casefold()
+            )
+
+            if hidden_gems:
+                for event in hidden_gems[:3]:
+                    with st.container(border=True):
+                        st.markdown(f"**{event['title']}**")
+                        st.caption(f"📍 {event['location']}")
+                        st.write("✨ Be among the first to register!")
+            else:
+                st.success(
+                    "Every listed event has received a registration!"
+                )
+    else:
+        st.info(
+            "Community trends will appear here as people register "
+            "for events. Explore the events below to get started!"
+        )
+
+    st.divider()
+        # ----------------------------------------------
+    # COMMUNITY ENGAGEMENT INSIGHT
+    # ----------------------------------------------
+
+    st.subheader("📊 Community Insight")
+
+    if total_registrations > 0:
+        popular_event = max(
+            events,
+            key=lambda event: event_counts.get(event["id"], 0)
+        )
+
+        popular_count = event_counts.get(popular_event["id"], 0)
+
+        if popular_count > 0:
+            st.success(
+                f"🏆 **Leading event:** {popular_event['title']} "
+                f"has {popular_count} registration(s)."
+            )
+    else:
+        st.info(
+            "Community insights will become available "
+            "when users start registering for events."
+        )
     # Vibrant NearVibe hero section
     st.html(
         """
@@ -310,7 +462,7 @@ if page == "Discover Events":
 );
 border: 1px solid rgba(167, 139, 250, 0.45);
 box-shadow: 0 8px 32px rgba(124, 58, 237, 0.18);
-            
+            border: 1px solid #3B4563;
             padding: 30px;
             border-radius: 22px;
             margin-bottom: 20px;
