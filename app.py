@@ -24,6 +24,47 @@ st.set_page_config(
 
 st.markdown("""
 <style>
+/* CrowdPulse metric cards */
+div[data-testid="stMetric"] {
+    background: linear-gradient(135deg, #151438, #0C2340);
+    border: 1px solid #6554F0;
+    border-radius: 16px;
+    padding: 18px 20px;
+    box-shadow: 0 4px 18px rgba(101, 84, 240, 0.15);
+    min-height: 110px;
+}
+
+/* Metric headings */
+div[data-testid="stMetricLabel"] {
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+}
+
+div[data-testid="stMetricLabel"] p {
+    color: #FFFFFF !important;
+    opacity: 1 !important;
+}
+
+/* Metric numbers */
+div[data-testid="stMetricValue"] {
+    color: #67E8F9 !important;
+    font-size: 36px !important;
+    font-weight: 800 !important;
+}
+
+/* Metric icons and labels */
+div[data-testid="stMetricLabel"] svg {
+    color: #A78BFA !important;
+    fill: #A78BFA !important;
+}
+
+/* Metric card hover effect */
+div[data-testid="stMetric"]:hover {
+    border-color: #22D3EE;
+    box-shadow: 0 6px 22px rgba(34, 211, 238, 0.20);
+    transition: all 0.2s ease-in-out;
+}
 
 /* Main application background */
 .stApp {
